@@ -1,0 +1,26 @@
+﻿Build started 26-06-2014 23:32:10.
+     1>Project "B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\Ubisoft\Ubisoft.vcxproj" on node 2 (Rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Debug\Ubisoft.lastbuildstate".
+       InitializeBuildStatus:
+         Creating "Debug\Ubisoft.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\/include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\Ubisoft.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\/include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Ubisoft.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Ubisoft.cpp
+         Ubisoft.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Debug\Ubisoft.res" Ubisoft.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\Debug\Ubisoft.exe" /INCREMENTAL /NOLOGO /LIBPATH:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\/lib/x86" glew32.lib glfw3dll.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\Debug\Ubisoft.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\Debug\Ubisoft.lib" /MACHINE:X86 Debug\Ubisoft.res
+         Debug\stdafx.obj
+         Debug\Ubisoft.obj
+         Ubisoft.vcxproj -> B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\Debug\Ubisoft.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\Ubisoft.unsuccessfulbuild".
+         Touching "Debug\Ubisoft.lastbuildstate".
+     1>Done Building Project "B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Ubisoft\Ubisoft\Ubisoft.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.53
