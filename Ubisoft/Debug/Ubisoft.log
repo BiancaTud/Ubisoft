@@ -1,4 +1,4 @@
-﻿Build started 29-06-2014 03:00:14.
+﻿Build started 30-06-2014 02:30:27.
      1>Project "B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\Ubisoft\Ubisoft.vcxproj" on node 2 (Build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Ubisoft.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -20,4 +20,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.48
+Time Elapsed 00:00:02.62

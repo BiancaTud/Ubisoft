@@ -9,12 +9,10 @@
 #include <math.h>
 #include <iostream>
 
-// functie banala de incarcat continutul unui fisier intr-un buffer
-
 #define pi 3.14
-
 using namespace std;
 
+// functie banala de incarcat continutul unui fisier intr-un buffer
 char * LoadFileInMemory(const char *filename)
 {
 	int size = 0;
@@ -119,37 +117,48 @@ int main () {
 	 -0.2f, 0.2f, 0.0f
   };
 
- /* 
+ 
   int nr;
 
-  nr=20;
+  nr=10;// numar vertecsi
 
- double vertex_buffer_circle[1000];
+  float vertex_buffer_circle[1000];
+  float angle = 2*(float)pi/nr;
 
-  int i;
+  //coordonatele initiale ale centrului cercului
+  float centerx=0.0f;
+  float centery=-0.6f;
 
-  double unghi = 2*pi/nr;
+  float t=0;
+  float r=0.2f; // raza cerc
 
-  cout<<"unghi"<<unghi;
+  int i=0;
 
-  for(i=0;i<nr*3;i+=3){
-	  vertex_buffer_circle[i]=0.2*cos(unghi*(i/3));
-	  vertex_buffer_circle[i+1]=0.2*sin(unghi*(i/3));
-	  vertex_buffer_circle[i+2]=0;
-	  cout<<i<<endl;
-	  cout<<vertex_buffer_circle[i]<<endl;
-	  cout<<vertex_buffer_circle[i+1]<<endl;
+  //Se vor forma "nr" triunghiuri 
+  for(int j = 0;j < nr; j++) {
+
+		//centrul cercului
+		vertex_buffer_circle[i++] = centerx; 
+		vertex_buffer_circle[i++] = centery; 
+		vertex_buffer_circle[i++] = 0;
+
+		//al doilea punct al triunghiului
+		vertex_buffer_circle[i++] = centerx + sin(t) * r; 
+		vertex_buffer_circle[i++] = centery + cos(t) * r;
+		vertex_buffer_circle[i++] = 0;
+
+		//al treilea punct al triunghiului
+		vertex_buffer_circle[i++] = centerx + sin(t + angle) * r; 
+		vertex_buffer_circle[i++] = centery + cos(t + angle) * r; 
+		vertex_buffer_circle[i++] = 0;
+
+		t += angle; 
   }
 
-  cout<<endl;
-  cout<<"cos"<<cos(pi)<<endl;
-  cout<<"sin"<<sin(pi);
 
-*/
-  GLuint vbo[3], vao[3];  
+  GLuint vbo[4], vao[4];  
 
-  glGenVertexArrays(3, &vao[0]);
-  // Generam un buffer in memoria video si scriem in el punctele din ram
+  glGenVertexArrays(4, &vao[0]);
   
   //triangle 1
   vbo[0] = 0;
@@ -174,9 +183,20 @@ int main () {
   glBindVertexArray(vao[2]);
   glGenBuffers(1, &vbo[2]); // generam un buffer 
   glBindBuffer(GL_ARRAY_BUFFER, vbo[2]); // setam bufferul generat ca bufferul curent 
-  glBufferData(GL_ARRAY_BUFFER,  sizeof (vertex_buffer_square), vertex_buffer_square, GL_STATIC_DRAW); 
+  glBufferData(GL_ARRAY_BUFFER,  sizeof(vertex_buffer_square), vertex_buffer_square, GL_STATIC_DRAW); 
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+  //circle
+  vbo[3] = 0;
+  glBindVertexArray(vao[3]);
+  glGenBuffers(1, &vbo[3]); // generam un buffer 
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[3]); // setam bufferul generat ca bufferul curent 
+  glBufferData(GL_ARRAY_BUFFER,  9 * nr * sizeof(GLfloat), vertex_buffer_circle, GL_STATIC_DRAW); 
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+
 
 
   while (!glfwWindowShouldClose(window)) {
@@ -197,15 +217,23 @@ int main () {
 
 	  //square
 	  glBindVertexArray(vao[2]);
-	  glDrawArrays(GL_TRIANGLES, 0,6);
+	  glDrawArrays(GL_TRIANGLES, 0, 6 );
 
-	 //glDrawArrays(GL_TRIANGLES, 0, nr);
+	  //circle  
+	  glUseProgram(shader_programme);
+	  glBindVertexArray(vao[3]);
+	  glDrawArrays(GL_TRIANGLES, 0, 3*nr );
+
 	 // facem swap la buffere (Double buffer)
 	  glfwSwapBuffers(window);
 
 	  glfwPollEvents();
 	}
 
+  glDeleteProgram(shader_programme);
+  glDeleteProgram(shader_programme2);
+  glDeleteBuffers(4, &vbo[0]);
+  glDeleteVertexArrays(4, &vao[4]);
   glfwTerminate();
   return 0;
 }
