@@ -11,6 +11,8 @@ Sprite::Sprite(int type,const char *filename, int life){
 	this->type=type;
 	this->life=life;
 	view_mat = proj_mat = model_mat = glm::mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
+	cont=0;
+	pas = 0.001;
 
 }
 
@@ -45,7 +47,6 @@ void Sprite::LoadTexture(){
 	unsigned char* image_data;
 	tex = 0;
 	glGenTextures(1, &tex);
-	cout<<filename<<" ";
 	image_data = stbi_load(filename, &x, &y, &n, force_channels);
 	FlipTexture(image_data, x, y, n);
 
@@ -79,7 +80,6 @@ void Sprite::LoadTexture(){
 
 
 void Sprite::Init(GLuint shader_programme){
-
 	this->shader_programme=shader_programme;
 	float vertex_square[] = {
 			0.0f, 0.0f, 0.0f,
@@ -128,7 +128,7 @@ void Sprite::Draw(){
 	glUniformMatrix4fv(glGetUniformLocation(shader_programme,"u_model_matrix"),1,false, glm::value_ptr(model_mat));
 	glUniformMatrix4fv(glGetUniformLocation(shader_programme,"u_transfMatrix"),1,false, glm::value_ptr(view_mat));
 	glUniformMatrix4fv(glGetUniformLocation(shader_programme,"u_proj_matrix"),1,false,glm::value_ptr(proj_mat));
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glUseProgram(shader_programme);
 	//glBindVertexArray(vbo);
@@ -142,13 +142,23 @@ void Sprite::Draw(){
 		NULL         // element array buffer offset
 		);
 
+	//rotatie inamic
 	if(type==1 ||  type==2){
 		float angle=0.12;
-		model_mat = glm::rotate(model_mat ,angle, glm::vec3(0 , 0 ,0.1));
+		model_mat = glm::rotate(model_mat ,angle, glm::vec3(0 , 0 ,0.2));
 	}
-	else if(type==3)
-		model_mat = glm::translate(model_mat , glm::vec3(0.0001 , 0 , 0));
 
+	//deplasare stanga dreapta inamic
+	else if(type==3){
+			if(cont<1.85){
+				model_mat = glm::translate(model_mat , glm::vec3(pas , 0 , 0));
+				cont+=abs(pas);
+			}
+			else{
+				cont=0;
+				pas*=-1;
+			}
+	}
 }
 
 void Sprite::setLife(int life){
@@ -166,20 +176,23 @@ int Sprite::getType(){
 void Sprite::setPosition(int type){
 
 	if (type==0)
-		model_mat = glm::translate(model_mat , glm::vec3(0.1 , -0.9 , 0));
+		model_mat = glm::translate(model_mat , glm::vec3(0.1f , -0.9f , 0.0f));
 	else if(type==1){
-		model_mat = glm::translate(model_mat , glm::vec3(-0.5 , 0 , 0));
+		model_mat = glm::translate(model_mat , glm::vec3(-0.5f , 0.0f , 0.0f));
 	}
 	else if(type==2)
-		model_mat = glm::translate(model_mat , glm::vec3(0.5 , 0 , 0));
+		model_mat = glm::translate(model_mat , glm::vec3(0.5f , 0.0f , 0.0f));
 	else
-		model_mat = glm::translate(model_mat , glm::vec3(0 , 0.5 , 0));
+		model_mat = glm::translate(model_mat , glm::vec3(-0.8f , 0.5f , 0.0f));
 
 }
 
 void Sprite::movePlayer(float tx, float ty){
 
-	model_mat = glm::translate(model_mat, glm::vec3(tx, ty , 0.0));
+	//verificare daca depaseste ecranul
+	if((model_mat[3][0] + tx)<1.0f && (model_mat[3][0] + tx)>-0.7f &&
+		(model_mat[3][1] + ty)<0.7f && (model_mat[3][1] + ty)>-1.0f)
+			model_mat = glm::translate(model_mat, glm::vec3(tx, ty , 0.0));
 
 }
 
@@ -187,22 +200,22 @@ void Sprite::movePlayer(float tx, float ty){
 void Sprite::onKey(GLFWwindow* window){
 
 	if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT)) {
-				movePlayer(-0.0007f, 0.0f);
+				movePlayer(-0.001f, 0.0f);
 		}
 
 		//deplasare dreapta
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_RIGHT)) {
-				movePlayer(0.0007f, 0.0f);
+				movePlayer(0.001f, 0.0f);
 		}
 
 		//deplasare sus
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_UP)) {
-				movePlayer(0.0f, 0.0007f);
+				movePlayer(0.0f, 0.001f);
 		}
 
 		//deplasare jos
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_DOWN)) {
-				movePlayer(0.0f, -0.0007f);
+				movePlayer(0.0f, -0.001f);
 		}
 
 }

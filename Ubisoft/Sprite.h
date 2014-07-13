@@ -8,6 +8,7 @@ private:
 		GLuint vbo, tex, tex_buff, shader_programme, elementbuffer;
 		const char * filename;
 		int type, life;
+		float cont, pas;
 		glm::mat4 view_mat, proj_mat, model_mat;
 
 public:
