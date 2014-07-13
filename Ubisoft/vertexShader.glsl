@@ -5,9 +5,10 @@ out vec2 texture_coord;
 
 uniform mat4 u_transfMatrix; 
 uniform mat4 u_proj_matrix;
+uniform mat4 u_model_matrix;
 
 void main(){
     texture_coord = texture_coordinates;
-    vec4 vertex_post =   /*u_transfMatrix **/ vec4 (vertex_position, 1.0);
-    gl_Position = /* u_proj_matrix **/ vec4(vertex_post.xyz,1.0) ;
+    vec4 vertex_post =   u_transfMatrix * vec4 (vertex_position, 1.0);
+    gl_Position =  u_model_matrix * u_proj_matrix * vec4(vertex_post.xyz,1.0) ;
 }

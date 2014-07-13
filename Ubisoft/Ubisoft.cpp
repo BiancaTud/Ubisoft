@@ -1,27 +1,7 @@
 // Ubisoft.cpp : Defines the entry point for the console application.
 
-
-
 #include "stdafx.h"
-#include <GL/glew.h> // include GLEW and new version of GL on Windows
-#include <GLFW32/glfw3.h> // GLFW helper library
-#include <math.h>
-#include <iostream>
-#include <stdlib.h>
-#include <crtdbg.h>
-#include <stb_image\stb_image.cpp>
-
-#define _CRTDBG_MAP_ALLOC
-#define pi 3.1415926
-using namespace std;
-
-
-#ifdef _DEBUG
-   #ifndef DBG_NEW
-      #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-      #define new DBG_NEW
-   #endif
-#endif  // _DEBUG
+#include "SpriteManager.h"
 
 
 // functie banala de incarcat continutul unui fisier intr-un buffer
@@ -48,30 +28,6 @@ char * LoadFileInMemory(const char *filename)
 }
 
 
-// flip image
-void FlipTexture(unsigned char* image_data,int x,int y , int n)
-{
-	//flip texture
-	int width_in_bytes = x * 4;
-	unsigned char *top = NULL;
-	unsigned char *bottom = NULL;
-	unsigned char temp = 0;
-	int half_height = y / 2;
-
-	for (int row = 0; row < half_height; row++) {
-		top = image_data + row * width_in_bytes;
-		bottom = image_data + (y - row - 1) * width_in_bytes;
-		for (int col = 0; col < width_in_bytes; col++) {
-			temp = *top;
-			*top = *bottom;
-			*bottom = temp;
-			top++;
-			bottom++;
-		}
-	}
-}
-
-
 
 int main () {
 
@@ -82,6 +38,7 @@ int main () {
 	}
 
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+
 
 	// Se creeaza fereastra
 	GLFWwindow* window = glfwCreateWindow (640, 480, "Workshop1", NULL, NULL);
@@ -135,7 +92,7 @@ int main () {
 	delete[] vertex_shader;
 	delete[] fragment_shader;
 	delete[] fragment_shader2;
-	_crtBreakAlloc = 18;
+	
 
  
   /*
@@ -198,80 +155,7 @@ int main () {
   }
   */
 
-	//array for square -> index buffer
-	float vertex_square[] = {
-		0.0f, 0.0f, 0.0f,
-        0.3f, 0.0f, 0.0f, 
-		0.3f, 0.3f, 0.0f, 
-		0.0f, 0.3f, 0.0f
-  };
-
-	float uv[] ={
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		1.0f, 1.0f,
-		0.0f, 1.0f
-  };
-
-	//array of indices for square
-	unsigned int indices [] = { 0, 1, 2, 0, 2, 3};
-
-	//load texture
-	int x, y, n, force_channels = 4;
-	unsigned char* image_data;
-	GLuint tex = 0;
-	glGenTextures(1, &tex);
-
-	image_data = stbi_load("index.jpg", &x, &y, &n, force_channels);
-	FlipTexture(image_data, x, y, n);
-
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glActiveTexture(GL_TEXTURE0);
-	glTexImage2D(
-			GL_TEXTURE_2D,
-			0,
-			GL_RGBA,
-			x,
-			y,
-			0,
-			GL_RGBA,
-			GL_UNSIGNED_BYTE,
-			image_data
-		);
-
-	// setam parametri de sampling
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); //ce se intampla cand coordonata nu se inscrie in limite
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); //ce se intampla cand coordonata nu se inscrie in limite
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // setam samplare cu interpolare liniara
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // setam samplare cu interpolare liniara
-
-	//activare transparenta
-	glEnable(GL_BLEND);
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	//vertex array object
-	GLuint vbo[4], vao[4];  
-	glGenVertexArrays(4, &vao[0]);
-
-  /*
-	//triangle 1
-	vbo[0] = 0;
-	glBindVertexArray(vao[0]);
-	glGenBuffers(1, &vbo[0]); // generam un buffer 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); // setam bufferul generat ca bufferul curent 
-	glBufferData(GL_ARRAY_BUFFER,  sizeof (vertex_buffer_triangle1), vertex_buffer_triangle1, GL_STATIC_DRAW); //  scriem in bufferul din memoria video informatia din bufferul din memoria RAM
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	//triangle 2
-	vbo[1] = 0;
-	glBindVertexArray(vao[1]);
-	glGenBuffers(1, &vbo[1]); // generam un buffer 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]); // setam bufferul generat ca bufferul curent 
-	glBufferData(GL_ARRAY_BUFFER,  sizeof (vertex_buffer_triangle2), vertex_buffer_triangle2, GL_STATIC_DRAW); 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    
+/*
 	//circle
 	vbo[3] = 0;
 	glBindVertexArray(vao[3]);
@@ -282,39 +166,18 @@ int main () {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL); 
   */
 
-	//square with index buffer
-	vbo[2] = 0;
-	glBindVertexArray(vao[2]);
-	glGenBuffers(1, &vbo[2]); // generam un buffer 
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[2]); // setam bufferul generat ca bufferul curent 
-	glBufferData(GL_ARRAY_BUFFER,  sizeof(vertex_square), vertex_square, GL_STATIC_DRAW);
-
-	unsigned int tex_buff=0;
-    glGenBuffers(1, &tex_buff);
-	glBindBuffer(GL_ARRAY_BUFFER, tex_buff);
-	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), uv, GL_STATIC_DRAW);
-
-	GLuint elementbuffer;
-	glGenBuffers(1, &elementbuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) , &indices[0], GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, tex_buff);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
+	SpriteManager *manag=new SpriteManager(shader_programme, 4, window);
+	manag->AddSprite("Space/Enemies/saucer_blades0000.png",1);
+	manag->AddSprite("Space/Enemies/spikey0000.png",2);
+	manag->AddSprite("Space/Enemies/slicer0000.png",3);
+	manag->AddSprite("Ship.png",0);
+	manag->Init();
 
 	while (!glfwWindowShouldClose(window)) {
 		//..... Randare................. 
 		// stergem ce s-a desenat anterior
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// spunem ce shader vom folosi pentru desenare
-	/*  glUseProgram(shader_programme);
-		//facem bind la vertex buffer
-		glBindVertexArray(vao[0]);
+	/*	
 	   //draw points 0-3 from the currently bound VAO with current in-use shader
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -326,31 +189,18 @@ int main () {
 		glUseProgram(shader_programme);
 		glBindVertexArray(vao[3]);
 		glDrawArrays(GL_TRIANGLES, 0, 3*nr );	  
-	  */
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, tex);
-		glUseProgram(shader_programme);
-		glBindVertexArray(vao[2]);
-		// Index buffer
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-		glEnableVertexAttribArray(0);
-		glDrawElements(
-			GL_TRIANGLES,      // mode
-			6,    // count
-			GL_UNSIGNED_INT,   // type
-			NULL         // element array buffer offset
-			);
-
+	 */
+		manag->Draw();
 		// facem swap la buffere (Double buffer)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		//manag->DelSprite(0);
 	}
 
 	glDeleteProgram(shader_programme);
 	glDeleteProgram(shader_programme2);
-	glDeleteBuffers(4, &vbo[0]);
-	glDeleteVertexArrays(4, &vao[4]);
+	delete manag;
+	_CrtSetBreakAlloc(167);
 	glfwTerminate();
 	return 0;
 }
