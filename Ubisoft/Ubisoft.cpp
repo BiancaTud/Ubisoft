@@ -167,10 +167,11 @@ int main () {
   */
 
 	SpriteManager *manag=new SpriteManager(shader_programme, 4, window);
+	manag->AddSprite("Ship.png",0);
 	manag->AddSprite("Space/Enemies/saucer_blades0000.png",1);
 	manag->AddSprite("Space/Enemies/spikey0000.png",2);
 	manag->AddSprite("Space/Enemies/slicer0000.png",3);
-	manag->AddSprite("Ship.png",0);
+	
 	manag->Init();
 
 	while (!glfwWindowShouldClose(window)) {

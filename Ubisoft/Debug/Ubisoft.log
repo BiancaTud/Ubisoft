@@ -1,11 +1,15 @@
-﻿Build started 13-07-2014 04:05:07.
+﻿Build started 13-07-2014 14:31:27.
      1>Project "B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\Ubisoft\Ubisoft.vcxproj" on node 2 (Build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Ubisoft.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
          All outputs are up-to-date.
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\/include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Ubisoft.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Ubisoft.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\/include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Ubisoft.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Sprite.cpp Ubisoft.cpp
          Ubisoft.cpp
+         Sprite.cpp
+     1>b:\bianca-nou\facultate\an 3\practica\ubisoft\github\ubisoft\sprite.cpp(146): warning C4305: 'initializing' : truncation from 'double' to 'float'
+         GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         Generating Code...
        ResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -22,4 +26,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.67
+Time Elapsed 00:00:02.01

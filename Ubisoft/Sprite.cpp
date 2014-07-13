@@ -72,6 +72,7 @@ void Sprite::LoadTexture(){
 	//activare transparenta
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	delete image_data;
 
 }
@@ -186,22 +187,22 @@ void Sprite::movePlayer(float tx, float ty){
 void Sprite::onKey(GLFWwindow* window){
 
 	if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_LEFT)) {
-				movePlayer(-0.0005f, 0.0f);
+				movePlayer(-0.0007f, 0.0f);
 		}
 
 		//deplasare dreapta
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_RIGHT)) {
-				movePlayer(0.0005f, 0.0f);
+				movePlayer(0.0007f, 0.0f);
 		}
 
 		//deplasare sus
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_UP)) {
-				movePlayer(0.0f, 0.0005f);
+				movePlayer(0.0f, 0.0007f);
 		}
 
 		//deplasare jos
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_DOWN)) {
-				movePlayer(0.0f, -0.0005f);
+				movePlayer(0.0f, -0.0007f);
 		}
 
 }
