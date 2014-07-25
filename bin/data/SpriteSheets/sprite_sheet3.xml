@@ -1,0 +1,4 @@
+<TextureAtlas imagePath="rocket_type_A0000.png">
+	<SubTexture name="projectile.png" x="0" y="0" width="32" height="32"/>
+
+</TextureAtlas>

@@ -1,0 +1,18 @@
+﻿Build started 26-07-2014 00:14:11.
+     1>Project "B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Animatie Framework\Framework\Framework.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Animatie Framework\\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
+         Main.cpp
+     1>b:\bianca-nou\facultate\an 3\practica\ubisoft\animatie framework\framework\main.cpp(287): warning C4018: '<' : signed/unsigned mismatch
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Animatie Framework\bin\x86\Framework_Debug.exe" /INCREMENTAL /NOLOGO /LIBPATH:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Animatie Framework\\lib\x86" glew32.lib glfw3dll.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Animatie Framework\bin\x86\Framework_Debug.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Animatie Framework\bin\x86\Framework_Debug.lib" /MACHINE:X86 Debug\Main.obj
+         Debug\Sprite.obj
+         Debug\SpriteManager.obj
+         Debug\stb_image.obj
+         Debug\Utils.obj
+         Framework.vcxproj -> B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Animatie Framework\bin\x86\Framework_Debug.exe
+     1>Done Building Project "B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\Animatie Framework\Framework\Framework.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.82

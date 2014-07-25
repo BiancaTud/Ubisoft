@@ -1,0 +1,4 @@
+0 -> 15 (inclusiv) : Idle
+16 -> 31 (inclusiv) : Left
+32 -> 47 (inclusiv) : Right
+

@@ -1,0 +1,4 @@
+<TextureAtlas imagePath="sprite_sheet1.png">
+	<SubTexture name="PlayerRocket.png" x="0" y="0" width="231" height="380"/>
+	<SubTexture name="PlayerRocketFire.png" x="233" y="0" width="92" height="138"/>
+</TextureAtlas>
