@@ -14,6 +14,7 @@
 #include "Utils.h"
 #include "SpriteManager.h"
 #include "Sprite.h"
+#include "Collision.h"
 #include<iostream>
 #include<vector>
 
@@ -29,8 +30,7 @@ GLFWwindow* window = NULL;
 int g_gl_width	= WWIDTH;
 int g_gl_height = WHEIGHT;
 
-//vector pentru proiectil
-vector<CSprite*> projectiles;
+
 bool semafor = true;
 
 
@@ -136,8 +136,9 @@ struct PlayerTest
 		}
 
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_SPACE) && semafor) {
-			projectiles.push_back(CSpriteManager::Get()->AddSprite("projectile.png", -1));
-			projectiles[projectiles.size() - 1]->SetPosition(glm::vec3(m_Sprite->GetPosition().x, m_Sprite->GetPosition().y, -11));
+			CSpriteManager::Get()->projectiles.push_back(CSpriteManager::Get()->AddSprite("projectile.png", -1));
+			CSpriteManager::Get()->projectiles[CSpriteManager::Get()->projectiles.size() - 1]->
+				SetPosition(glm::vec3(m_Sprite->GetPosition().x, m_Sprite->GetPosition().y+0.8f, -14));
 			semafor = false;
 		}
 
@@ -239,63 +240,62 @@ int main()
 	assert(playerSprite);
 	PlayerEntity.Init(playerSprite);
 
+	float t = 0.0f;
+	float dt = 0.01f;
 
-	double prevTime = glfwGetTime();
-	glm::vec3 posProj;
 
+	float prevTime =(float) glfwGetTime();
+	float accumulator = 0.0f;
+
+	
+
+	Collision *collide = new Collision();
+	
+
+	bool hit = false;
 	while (!glfwWindowShouldClose(window))
 	{
 		//projectile->SetPosition(glm::vec3(playerSprite->GetPosition().x, playerSprite->GetPosition().y, -12));
-		float deltaTime = (float)(glfwGetTime() - prevTime);
-		prevTime = glfwGetTime();
+		float newTime =(float) glfwGetTime();
+		float deltaTime = (float)(newTime - prevTime);
+
+		
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glViewport(0, 0, g_gl_width, g_gl_height);
 
+
+		if (deltaTime > 0.25f)
+			deltaTime = 0.25f;
+		prevTime = newTime;
+
+		accumulator += deltaTime;
+
+		while (accumulator >= dt)
+		{
+			//update
+			PlayerEntity.Update(dt);
+			CSpriteManager::Get()->Update(dt);
+			t += dt;
+			accumulator -= dt;
+		}
+
 		// update logic pentru player
-		PlayerEntity.Update(deltaTime);
+		//PlayerEntity.Update(deltaTime);
 
 		// update animatie
-		CSpriteManager::Get()->Update(deltaTime);
+	//	CSpriteManager::Get()->Update(deltaTime);
 		// desenare
 		CSpriteManager::Get()->Draw();
 
-		glm::vec2 a, b, c, d, p, q, r, s;
-		//player
-		a.x = d.x = playerSprite->model_mat[3][0];
-		a.y = b.y = playerSprite->model_mat[3][1];
-		b.x = c.x = a.x + 0.4f;
-		c.y = d.y = a.y + 1.0f;
-		//inamic
-		p.x = s.x = RandomRocket->model_mat[3][0];
-		p.y = q.y = RandomRocket->model_mat[3][1];
-		q.x = r.x = p.x + 0.6f;
-		r.y = s.y = p.y + 1.0f;
-
 		//verificare coliziune
-		CSpriteManager::Get()->CheckCollision(a, b, c, d, p, q, r, s);
+		hit=collide->CheckCollision(playerSprite, RandomRocket);
 
-		if (CSpriteManager::Get()->check == true){
+		if (hit == true){
 			playerSprite->SetPosition(glm::vec3(playerSprite->GetPosition().x,
 				playerSprite->GetPosition().y - 4.0f, playerSprite->GetPosition().z));
-			CSpriteManager::Get()->check = false;
-		}
-
-
-		// Limitarea proiectil
-		for (int i = 0; i < projectiles.size(); i++){
-			if (projectiles[i]->GetPosition().y > SCREEN_TOP - 0.4f)
-			{
-				CSpriteManager::Get()->RemoveSprite(projectiles[i]->index);
-				projectiles.erase(projectiles.begin() + i);
-				
-				
-			}
-			else{
-				posProj = projectiles[i]->GetPosition();
-				projectiles[i]->SetPosition(glm::vec3(posProj.x, posProj.y + 13* deltaTime, posProj.z));
-			}
+			hit = false;
 		}
 
 		glfwPollEvents();
@@ -307,6 +307,8 @@ int main()
 		}
 
 	}
+
+	delete collide;
 	glfwTerminate();
 	return 0;
 }

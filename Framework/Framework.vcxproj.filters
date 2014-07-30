@@ -22,6 +22,7 @@
     <ClCompile Include="stb_image.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Collision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h" />
@@ -45,5 +46,6 @@
     <ClInclude Include="rapidxml_utils.hpp">
       <Filter>RapidXML</Filter>
     </ClInclude>
+    <ClInclude Include="Collision.h" />
   </ItemGroup>
 </Project>

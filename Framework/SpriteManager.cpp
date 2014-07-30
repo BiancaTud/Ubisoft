@@ -19,6 +19,7 @@ static unsigned int				g_AllSpritesCount			= 0;
 static CSprite					*g_AllSpritesInScene[MAX_SCENE_SPRITE_COUNT];
 static unsigned int				g_AllSpritesInSceneCount	= 0;
 
+
 CSpriteManager					CSpriteManager::g_me;
 
 // Cautare liniara dupa nume in vectorul m_AllLoadedAnimations
@@ -306,24 +307,6 @@ int SpriteDepthCompare (const void * a, const void * b)
 }
 
 
-void CSpriteManager::CheckCollision(glm::vec2 a1, glm::vec2 b1, glm::vec2 c1, glm::vec2 d1,
-	glm::vec2 a2, glm::vec2 b2, glm::vec2 c2, glm::vec2 d2){
-
-	if ((a1.x > a2.x && a1.x < b2.x && a1.y < d2.y && a1.y > a2.y) ||
-		(b1.x > a2.x && b1.x < b2.x && b1.y < d2.y && b1.y > a2.y) ||
-		(c1.x > a2.x && c1.x < b2.x && c1.y < d2.y && c1.y > a2.y) ||
-		(d1.x > a2.x && d1.x < b2.x && d1.y < d2.y && d1.y > a2.y) ||
-
-		(a2.x > a1.x && a2.x < b1.x && a2.y < d1.y && a2.y > a1.y) ||
-		(b2.x > a1.x && b2.x < b1.x && b2.y < d1.y && b2.y > a1.y) ||
-		(c2.x > a1.x && c2.x < b1.x && c2.y < d1.y && c2.y > a1.y) ||
-		(d2.x > a1.x && d2.x < b1.x && d2.y < d1.y && d2.y > a1.y) ){
-		cout << "Coliziuneeeeeeeeeeeeee maximaaaaaaaaaaaaaaaaaaaaaa" << endl;
-		check = true;
-	}
-
-}
-
 
 // Desenarea sprite-urilor
 void CSpriteManager::Draw()
@@ -348,6 +331,27 @@ void CSpriteManager::Update(float dt)
 	{
 		g_AllSpritesInScene[i]->UpdateAnimation(dt);
 	}
+
+	glm::vec3 posProj;
+	//limitare proiectile
+	for (int i = 0; i < projectiles.size(); i++){
+		//daca depasesc ecranul sunt sterse
+		if (projectiles[i]->GetPosition().y > SCREEN_TOP - 0.4f)
+		{
+			RemoveSprite(CSpriteManager::Get()->projectiles[i]->index);
+			projectiles.erase(CSpriteManager::Get()->projectiles.begin() + i);
+
+
+		}
+		//altfel este updatata pozitia lor
+		else{
+			posProj = projectiles[i]->GetPosition();
+			projectiles[i]->SetPosition(glm::vec3(posProj.x, posProj.y +projectiles[i]->speed * dt, posProj.z));
+				
+		}
+	}
+
+
 }
 
 CSpriteManager::~CSpriteManager()

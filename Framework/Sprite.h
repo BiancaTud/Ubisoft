@@ -27,6 +27,7 @@ class CSprite
 
 
 
+
 //pentru RandomRacket
 	float range;
 	float pas;
@@ -70,6 +71,8 @@ public:
 
 	//Indicele sprite-ului
 	int index;
+
+	float speed;
 
 	CSprite();
 	//functie care seteaza tipul sprite-ului

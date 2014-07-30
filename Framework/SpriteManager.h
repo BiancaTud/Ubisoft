@@ -117,6 +117,10 @@ public:
 	~CSpriteManager();
 
 
+	//vector pentru proiectil
+	vector<CSprite*> projectiles;
+
+
 	//detect collision
 	bool check;
 
@@ -132,11 +136,6 @@ public:
 	void			Draw();
 	// Functie cu care se updateaza toate sprite-urile "din scena"
 	void			Update(float dt);
-
-
-	//Functie care verifica daca doua obiecte sunt in coliziune
-	void CheckCollision(glm::vec2 a1, glm::vec2 b1, glm::vec2 c1, glm::vec2 d1,
-		glm::vec2 a2, glm::vec2 b2, glm::vec2 c2, glm::vec2 d2);
 
 	//Functie care intoarce sablonul de animatie cu numele name
 	SAnimation*		GetAnimation(const char *name);

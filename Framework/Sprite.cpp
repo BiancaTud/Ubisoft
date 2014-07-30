@@ -24,14 +24,22 @@ CSprite::CSprite()
 	m_IndexBufferID					= -1;
 	model_mat = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	range = 0;
-	pas = 0.01f;
+	pas = 0.1f;
 	life = 3;
+	speed = 0.0f;
 }
 
 
 void CSprite::SetType(int type){
 
 	this->type = type;
+
+	if (type == 0)
+		speed = 2.0f;
+	else if (type == -1)
+		speed = 12;
+	else if (type == 1)
+		speed =5.0f;
 
 }
 
@@ -140,8 +148,22 @@ void CSprite::UpdateAnimation(float dt)
 {
 	// determinam frame-ul curent pentru animatie in functie de timp
 	// daca timpul animatiei a trecut, o luam de la inceput
-	if(!m_CurrentAnimation.currentAnimationTemplate)
+	if (!m_CurrentAnimation.currentAnimationTemplate){
+		//pentru racheta update
+		if (type == 1){
+			if (range<10.5f){
+				SetPosition(glm::vec3( m_Position.x + speed*dt, m_Position.y, m_Position.z));
+				range += abs(speed*dt);
+			}
+			else{
+				range = 0;
+				speed *= -1;
+			}
+		}
+
+
 		return;
+	}
 
 	m_CurrentAnimation.currentAnimationPlayTime += dt;
 	float anim_len =   (float)(m_CurrentAnimation.currentAnimationTemplate->m_EndFrame - m_CurrentAnimation.currentAnimationTemplate->m_BeginFrame) ;
@@ -185,22 +207,6 @@ void CSprite::Draw()
 	
 	}
 
-	
-	//proiectil
-	if (type == -1){
-		//SetPosition(glm::vec3(m_Position.x, m_Position.y + 0.1, m_Position.z));
-	}
-
-	if (type == 1){
-		if (range<7.5f){
-			SetPosition(glm::vec3(pas+ m_Position.x, m_Position.y, m_Position.z));
-			range += abs(pas);
-		}
-		else{
-			range = 0;
-			pas *= -1;
-		}
-	}
 
 
 
