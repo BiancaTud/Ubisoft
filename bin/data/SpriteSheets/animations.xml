@@ -3,4 +3,5 @@
 <Animation  name ="Left" begin = "player0016.png"  end ="player0031.png" speed="12" />
 <Animation  name ="Right" begin = "player0032.png"  end ="player0047.png" speed="12" />
 
+<Animation  name ="BugEye_Idle" begin = "bug_eye0000.png" end ="bug_eye0015.png" speed="12" />
 </Animations>

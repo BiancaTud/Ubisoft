@@ -1,9 +1,8 @@
-﻿Build started 30-07-2014 15:22:29.
+﻿Build started 30-07-2014 20:42:20.
      1>Project "B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\Framework\Framework.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt SpriteManager.cpp
-         SpriteManager.cpp
-     1>b:\bianca-nou\facultate\an 3\practica\ubisoft\github\framework\spritemanager.cpp(337): warning C4018: '<' : signed/unsigned mismatch
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Collision.cpp
+         Collision.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\bin\x86\Framework_Debug.exe" /INCREMENTAL /NOLOGO /LIBPATH:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\\lib\x86" glew32.lib glfw3dll.lib opengl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\bin\x86\Framework_Debug.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"B:\Bianca-nou\Facultate\an 3\practica\Ubisoft\GITHUB\bin\x86\Framework_Debug.lib" /MACHINE:X86 Debug\Collision.obj
          Debug\Main.obj
@@ -16,4 +15,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.45
+Time Elapsed 00:00:03.76

@@ -165,6 +165,18 @@ void CSprite::UpdateAnimation(float dt)
 		return;
 	}
 
+	/*if (type == 1){
+		if (range<8.5f){
+			SetPosition(glm::vec3(m_Position.x + speed*dt, m_Position.y, m_Position.z));
+			range += abs(speed*dt);
+		}
+		else{
+			range = 0;
+			speed *= -1;
+		}
+	}*/
+
+
 	m_CurrentAnimation.currentAnimationPlayTime += dt;
 	float anim_len =   (float)(m_CurrentAnimation.currentAnimationTemplate->m_EndFrame - m_CurrentAnimation.currentAnimationTemplate->m_BeginFrame) ;
 	float time_len =	anim_len* 1.0f/m_CurrentAnimation.currentAnimationTemplate->m_Speed;

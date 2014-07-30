@@ -47,6 +47,42 @@ void APIENTRY openglDebugCallback(GLenum source, GLenum type, GLuint id, GLenum 
 	__debugbreak();
 }
 
+//draft pentru inamic
+struct EnemyTest
+{
+	CSprite*				m_Sprite;
+
+	// Constructor
+	EnemyTest() :m_Sprite(NULL){}
+
+	// Initializare
+	void Init(CSprite *spr)
+	{
+		m_Sprite = spr;
+
+		glm::vec3 pz = m_Sprite->GetPosition();
+		m_Sprite->PlayAnimation("BugEye_Idle");
+	}
+
+
+	void Update(float dt)
+	{
+		//m_Sprite->SetPosition(glm::vec3(m_Body->position.x, m_Body->position.y, -10.0f));
+
+	}
+
+	~EnemyTest()
+	{
+
+	}
+
+};
+
+
+
+
+
+
 // Clasa cu care testam functionalitatea introdusa (draft de Player)
 struct PlayerTest
 {
@@ -231,38 +267,53 @@ int main()
 	//CSprite *projectile = CSpriteManager::Get()->AddSprite("projectile.png", -1);
 	CSprite *back = CSpriteManager::Get()->AddSprite("Background.png",2);
 	CSprite *playerSprite = CSpriteManager::Get()->AddSprite("player0000.png", 0);
-	CSprite *RandomRocket = CSpriteManager::Get()->AddSprite("PlayerRocket.png", 1);
+//	CSprite *RandomRocket = CSpriteManager::Get()->AddSprite("PlayerRocket.png", 1);
 	float x = -1;
-	RandomRocket->SetPosition(glm::vec3(-4.0f, 1.0f, -12));
+//	RandomRocket->SetPosition(glm::vec3(-4.0f, 1.0f, -12));
 	
 	back->SetPosition(glm::vec3(-4, -4, -15));
 
 	assert(playerSprite);
 	PlayerEntity.Init(playerSprite);
 
+	EnemyTest vec[100];
+	int number_of_enemy = 5;
+	//vector de inamici
+	vector<CSprite*> enemies;
+	for (int i = 0; i< number_of_enemy; i++)
+	{
+		CSprite *RandomRocket = CSpriteManager::Get()->AddSprite("PlayerRocket.png",1);
+		RandomRocket->SetPosition(glm::vec3((i - number_of_enemy / 2.0f) * 2.0, 1.5, -11));
+		vec[i].Init(RandomRocket);
+		enemies.push_back(RandomRocket);
+
+
+	}
+
+
+
 	float t = 0.0f;
 	float dt = 0.01f;
 
-
 	float prevTime =(float) glfwGetTime();
 	float accumulator = 0.0f;
-
-	
 
 	Collision *collide = new Collision();
 	
 
 	bool hit = false;
+	bool hit2 = false;
+	int i;
 	while (!glfwWindowShouldClose(window))
 	{
-		//projectile->SetPosition(glm::vec3(playerSprite->GetPosition().x, playerSprite->GetPosition().y, -12));
+
+		_update_fps_counter(window);
+
 		float newTime =(float) glfwGetTime();
 		float deltaTime = (float)(newTime - prevTime);
-
 		
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		glViewport(0, 0, g_gl_width, g_gl_height);
 
 
@@ -274,29 +325,38 @@ int main()
 
 		while (accumulator >= dt)
 		{
-			//update
+			// update logic pentru player
 			PlayerEntity.Update(dt);
+			// update animatie
 			CSpriteManager::Get()->Update(dt);
 			t += dt;
 			accumulator -= dt;
 		}
 
-		// update logic pentru player
-		//PlayerEntity.Update(deltaTime);
-
-		// update animatie
-	//	CSpriteManager::Get()->Update(deltaTime);
 		// desenare
 		CSpriteManager::Get()->Draw();
 
-		//verificare coliziune
-		hit=collide->CheckCollision(playerSprite, RandomRocket);
-
-		if (hit == true){
-			playerSprite->SetPosition(glm::vec3(playerSprite->GetPosition().x,
-				playerSprite->GetPosition().y - 4.0f, playerSprite->GetPosition().z));
-			hit = false;
+		//verificare coliziune intre player si inamic
+		for ( i = 0; i< number_of_enemy; i++)
+		{
+			collide->ResolveCollision(playerSprite,enemies[i]);
 		}
+		//collide->ResolveCollision(playerSprite, RandomRocket);
+
+		//verificare coliziune intre inamic si proiectilul player-ului
+	/*	for (i = 0; i < CSpriteManager::Get()->projectiles.size(); i++){
+
+			hit2 = collide->CheckCollision(CSpriteManager::Get()->projectiles[i], RandomRocket);
+			if (hit2 == true)
+				break;
+
+		}
+
+		if ( hit2 == true){
+			CSpriteManager::Get()->RemoveSprite(CSpriteManager::Get()->projectiles[i]->index);
+			CSpriteManager::Get()->projectiles.erase(CSpriteManager::Get()->projectiles.begin() + i);
+			hit2 = false;
+		}*/
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);

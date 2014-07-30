@@ -22,8 +22,7 @@ class CSprite
 // Raportul Width/Height 
 	float		m_AspectRatio;
 
-//Tipul
-	int type;
+
 
 
 
@@ -63,9 +62,12 @@ class CSprite
 
 public:
 
-	//Nr-ul de vieti
+	//Tipul
+	int type;
 
+	//Nr-ul de vieti
 	int life;
+
 	//matrice de transformare sprite
 	glm::mat4 model_mat;
 

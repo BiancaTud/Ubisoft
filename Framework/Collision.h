@@ -13,12 +13,14 @@ public:
 	Collision();
 	void Init(CSprite *sprite1, CSprite *sprite2);
 	bool CheckCollision(CSprite *sprite1, CSprite *sprite2);
+	void ResolveCollision(CSprite *sprite1, CSprite *sprite2);
 	virtual ~Collision();
 	// Getter pentru Collision
 	static Collision * Get() { return &c_me; };
 
 private:
-
+	bool hitPlayer;
+	bool hitEnemy;
 	static Collision c_me;
 
 };
