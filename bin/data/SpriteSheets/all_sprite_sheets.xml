@@ -2,6 +2,9 @@
 <SpriteSheet file="sprite_sheet1.xml"/>
 <SpriteSheet file="sprite_sheet2.xml"/>
 <SpriteSheet file="sprite_sheet3.xml"/>
+<SpriteSheet file="sprite_sheet4.xml"/>
+<SpriteSheet file="sprite_sheet5.xml"/>
+<SpriteSheet file="sprite_sheet6.xml"/>
 <SpriteSheet file="player.xml"/>
 <SpriteSheet file="bugeye.xml"/>
 </SpriteSheets>

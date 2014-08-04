@@ -40,6 +40,14 @@ extern	GLFWwindow* window;
 #define SCREEN_TOP	 4.0f
 #define SCREEN_BOTTOM -4.0f
 
+#define background -2
+#define player_proj -1
+#define player 0
+#define enemy 1
+#define enemy_proj 2
+#define mini 3
+#define textLife 4
+
 
 enum VERTEX_ATRIBUTES
 {

@@ -25,8 +25,10 @@ CSprite::CSprite()
 	model_mat = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 	range = 0;
 	pas = 0.1f;
-	life = 3;
 	speed = 0.0f;
+	move = 0;
+	ok = true;
+	life = 5;
 }
 
 
@@ -34,12 +36,16 @@ void CSprite::SetType(int type){
 
 	this->type = type;
 
-	if (type == 0)
+	if (type == player || type == enemy_proj){
 		speed = 2.0f;
-	else if (type == -1)
-		speed = 12;
-	else if (type == 1)
-		speed =5.0f;
+		life = 3;
+	}
+	else if (type == player_proj)
+		speed = 7;
+	else if (type == enemy){
+		speed = 7.0f;
+		life = 2;
+	}
 
 }
 
@@ -47,7 +53,6 @@ void CSprite::SetType(int type){
 void CSprite::SetPosition(glm::vec3 p){
 
 	m_Position = p;
-	model_mat = glm::translate(p);
 	
 
 }
@@ -63,11 +68,24 @@ void CSprite::Init(GLuint shader_programme, float *texture_coordinates, float as
 							m_AspectRatio,	1.0f ,	0.0f,
 							0.0f,			1.0f ,	0.0f };
 
-	//pentru proiectil
+	//pentru proiectil player
 	GLfloat VerticesProj[] = { 0, 0, 0.0f,
-		m_AspectRatio / 3, 0, 0.0f,
-		m_AspectRatio / 3, 1.0f / 3, 0.0f,
+		m_AspectRatio / 3 , 0, 0.0f,
+		m_AspectRatio / 3 , 1.0f / 3, 0.0f,
 		0, 1.0f / 3, 0.0f };
+
+	//pentru proiectil inamic
+	GLfloat EnemyProj[] = { 0, 0, 0.0f,
+		m_AspectRatio / 8, 0, 0.0f,
+		m_AspectRatio / 8, 1.0f / 8, 0.0f,
+		0, 1.0f / 8, 0.0f };
+
+	//pentru text
+	GLfloat VerticesText[] = { 0, 0, 0.0f,
+		m_AspectRatio / 3 + 0.2f, 0, 0.0f,
+		m_AspectRatio / 3 + 0.2f, 1.0f / 3, 0.0f,
+		0, 1.0f / 3, 0.0f };
+
 
 	//pentru background
 	float x = SCREEN_RIGHT - SCREEN_LEFT;
@@ -88,18 +106,29 @@ void CSprite::Init(GLuint shader_programme, float *texture_coordinates, float as
 	
 	glGenBuffers(1, &m_PositionVertexBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_PositionVertexBufferID);
-	if (type == 0 || type==1){
+	if (type == player || type==enemy){
 		glBufferData(GL_ARRAY_BUFFER, 12 * sizeof (float), Vertices, GL_STATIC_DRAW);
 	}
-	else if (type==2){
+	else if (type==background){
 
 		glBufferData(GL_ARRAY_BUFFER, 12 * sizeof (float), VerticesBack, GL_STATIC_DRAW);
 	}
-	else if (type == -1){
+	else if (type == player_proj || type == mini ){
 
 		glBufferData(GL_ARRAY_BUFFER, 12 * sizeof (float), VerticesProj, GL_STATIC_DRAW);
 
 	}
+
+	else if (type == enemy_proj ){
+
+		glBufferData(GL_ARRAY_BUFFER, 12 * sizeof (float), EnemyProj, GL_STATIC_DRAW);
+	}
+
+	else if (type == textLife){
+
+		glBufferData(GL_ARRAY_BUFFER, 12 * sizeof (float), VerticesText, GL_STATIC_DRAW);
+	}
+
 
 	glGenBuffers(1, &m_TextureCoordinatesBufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, m_TextureCoordinatesBufferID);
@@ -130,10 +159,12 @@ void CSprite::Init(GLuint shader_programme, float *texture_coordinates, float as
 	m_ModelMatrix_loc	= glGetUniformLocation(m_ShaderProgram, "u_transfMatrix");
 
 	m_Position.x = m_Position.y=0.0f;
-	if (type == 0){
+	if (type ==player ){
 		m_Position.z = -10.0f;
 	}
 }
+
+
 
 void	CSprite::PlayAnimation(const char * name)
 {
@@ -144,37 +175,67 @@ void	CSprite::PlayAnimation(const char * name)
 	assert(m_CurrentAnimation.currentAnimationTemplate);
 }
 
+
+float  CSprite::getFirstParabolaY(float x){
+
+	float y = (1.0f*4/9)*x*x- 2;
+
+	return y;
+
+}
+
+float CSprite::getSecondParabolaY(float x){
+	
+	float y = (-1.0f * 4 / 9)*x*x + 2;
+
+	return y;
+}
+
+
 void CSprite::UpdateAnimation(float dt)
 {
 	// determinam frame-ul curent pentru animatie in functie de timp
 	// daca timpul animatiei a trecut, o luam de la inceput
 	if (!m_CurrentAnimation.currentAnimationTemplate){
-		//pentru racheta update
-		if (type == 1){
-			if (range<10.5f){
-				SetPosition(glm::vec3( m_Position.x + speed*dt, m_Position.y, m_Position.z));
-				range += abs(speed*dt);
-			}
-			else{
-				range = 0;
-				speed *= -1;
-			}
-		}
-
-
 		return;
 	}
 
-	/*if (type == 1){
-		if (range<8.5f){
-			SetPosition(glm::vec3(m_Position.x + speed*dt, m_Position.y, m_Position.z));
-			range += abs(speed*dt);
+	//miscare inamici
+	if (type == 1){
+		
+		if ((m_Position.x > 0.0f && m_Position.y> 2.1f) || move==1){
+			move = 1;
+
+			if (m_Position.y < -2.8f){
+				move = 2;
+			}
+			SetPosition(glm::vec3(m_Position.x, m_Position.y - speed*dt, m_Position.z));
+
 		}
 		else{
-			range = 0;
-			speed *= -1;
+			if (move == 0){
+				float posX = GetPosition().x;
+				posX += speed*dt*1.0f/5;
+				float posY = getFirstParabolaY(posX);
+				SetPosition(glm::vec3(posX, posY, GetPosition().z));
+			}
+			else if (move == 2){
+				float posX = GetPosition().x;
+				posX -= speed*dt*1.0f/5;
+				float posY = getSecondParabolaY(posX);
+				SetPosition(glm::vec3(posX, posY, GetPosition().z));
+				if (m_Position.x < 0 && m_Position.y < -2.8f){
+					move = 3;
+				}
+			}
+			else if (move == 3){
+				SetPosition(glm::vec3(m_Position.x, m_Position.y + speed*dt, m_Position.z));
+				if (m_Position.x < 0 && m_Position.y > 2.1f){
+					move = 0;
+				}
+			}
 		}
-	}*/
+	}
 
 
 	m_CurrentAnimation.currentAnimationPlayTime += dt;
@@ -219,14 +280,7 @@ void CSprite::Draw()
 	
 	}
 
-
-
-
 	model_mat = glm::translate(m_Position);
-
-	/*if (type == 0){
-		printMat(model_mat);
-	}*/
 
 
 	// trimitem ModelMatrix la shader (pentru deplasarea vertecsilor)

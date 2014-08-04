@@ -13,7 +13,10 @@ public:
 	Collision();
 	void Init(CSprite *sprite1, CSprite *sprite2);
 	bool CheckCollision(CSprite *sprite1, CSprite *sprite2);
-	void ResolveCollision(CSprite *sprite1, CSprite *sprite2);
+	void ResolveCollisionPlayer(CSprite *sprite1, CSprite *sprite2);
+	void ResolveCollisionEnemy(vector<CSprite*> v1, vector <CSprite*> v2);
+	bool getStatusPlayer();
+	bool getStatusEnemy();
 	virtual ~Collision();
 	// Getter pentru Collision
 	static Collision * Get() { return &c_me; };

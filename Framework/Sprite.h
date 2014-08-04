@@ -22,14 +22,11 @@ class CSprite
 // Raportul Width/Height 
 	float		m_AspectRatio;
 
-
-
-
-
-
 //pentru RandomRacket
 	float range;
 	float pas;
+	float enemyX;
+	int move; //pt miscare stanga dreapta
 
 
 // Identificatori OpengGL pentru resurse grafice
@@ -64,6 +61,9 @@ public:
 
 	//Tipul
 	int type;
+	
+	//pentru proiectil inamic
+	bool ok;
 
 	//Nr-ul de vieti
 	int life;
@@ -74,6 +74,7 @@ public:
 	//Indicele sprite-ului
 	int index;
 
+	//Viteza sprite
 	float speed;
 
 	CSprite();
@@ -100,6 +101,13 @@ public:
 
 	// functie care intoarce pozitia sprite-ului
 	glm::vec3	GetPosition() { return m_Position;}
+
+
+
+	//functii pentru miscare inamici
+	float getFirstParabolaY(float x);
+	
+	float getSecondParabolaY(float x);
 
 	~CSprite();
 };

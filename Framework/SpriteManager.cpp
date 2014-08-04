@@ -20,6 +20,10 @@ static CSprite					*g_AllSpritesInScene[MAX_SCENE_SPRITE_COUNT];
 static unsigned int				g_AllSpritesInSceneCount	= 0;
 
 
+//vector cu toate Sprite-urile din scena
+vector<CSprite*> all;
+
+
 CSpriteManager					CSpriteManager::g_me;
 
 // Cautare liniara dupa nume in vectorul m_AllLoadedAnimations
@@ -246,7 +250,7 @@ void CSpriteManager::Init()
 CSprite * CSpriteManager::AddSprite(const char * name, int type)
 {
 	// luam un sprite nou din vector-ul Pool
-	CSprite*		newSprite			= &g_AllSprites[g_AllSpritesCount++];
+	CSprite*		newSprite = &g_AllSprites[g_AllSpritesCount++];
 
 
 	//setam tipul
@@ -275,22 +279,20 @@ CSprite * CSpriteManager::AddSprite(const char * name, int type)
 	newSprite->SetTexture(SpriteSubTexture->m_RefTexture->m_Id);
 	
 	// adaugam spriteul in scena
-	g_AllSpritesInScene[g_AllSpritesInSceneCount] = newSprite;
-	g_AllSpritesInSceneCount++;
 
+	all.push_back(newSprite);
 	return newSprite;
 }
 
 void CSpriteManager::RemoveSprite(int i)
-{
+{	
+
 	// cand scoatem un sprite, mutam ultimul sprite peste el si scadem dimensiunea sprite-urilor active
-	g_AllSpritesCount--;
-	g_AllSprites[i] = g_AllSprites[g_AllSpritesCount];
+	if (i != 0 && (i<=all.size()-1)){
+		all[i] = all[all.size() - 1];
+		all.erase(all.end() - 1);
+	}
 
-
-	//scoatem din scena
-	g_AllSpritesInSceneCount--;
-	g_AllSpritesInScene[i] = g_AllSpritesInScene[g_AllSpritesInSceneCount];
 }
 
 // functie de comparatie dupa adancime folosita la sortare (qsort)
@@ -313,13 +315,16 @@ void CSpriteManager::Draw()
 {
 	//qsort(g_AllSpritesInScene, g_AllSpritesInSceneCount, sizeof(g_AllSpritesInScene[0]), SpriteDepthCompare);
 	
-	for (unsigned int i = 0; i< g_AllSpritesInSceneCount; i++)
+	for (unsigned int i = 0; i< all.size(); i++)
 	{
 		
 		glUniformMatrix4fv(m_ProjectionMatrixLoc, 1, GL_FALSE, glm::value_ptr(m_ProjectionMatrix));
-		g_AllSpritesInScene[i]->index = i;
+		
+		if (all[i]->life>0){
+			all[i]->Draw();
+		}
 
-		g_AllSpritesInScene[i]->Draw();
+		all[i]->index = i;
 	}
 }
 
@@ -327,19 +332,22 @@ void CSpriteManager::Draw()
 void CSpriteManager::Update(float dt)
 {
 		
-	for (unsigned int i = 0; i< g_AllSpritesInSceneCount; i++)
+	for (unsigned int i = 0; i< all.size(); i++)
 	{
-		g_AllSpritesInScene[i]->UpdateAnimation(dt);
+		if (all[i]->life>0)
+			all[i]->UpdateAnimation(dt);
 	}
 
 	glm::vec3 posProj;
 	//limitare proiectile
+	int pivot = 0;
 	for (int i = 0; i < projectiles.size(); i++){
 		//daca depasesc ecranul sunt sterse
 		if (projectiles[i]->GetPosition().y > SCREEN_TOP - 0.4f)
 		{
-			RemoveSprite(CSpriteManager::Get()->projectiles[i]->index);
-			projectiles.erase(CSpriteManager::Get()->projectiles.begin() + i);
+			RemoveSprite(CSpriteManager::Get()->projectiles[i]->index-pivot);
+			projectiles.erase(CSpriteManager::Get()->projectiles.begin() + i-pivot);
+			pivot++;
 
 
 		}

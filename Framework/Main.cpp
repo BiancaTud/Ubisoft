@@ -32,7 +32,7 @@ int g_gl_height = WHEIGHT;
 
 
 bool semafor = true;
-
+vector<CSprite*> lives;
 
 
 void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
@@ -51,6 +51,8 @@ void APIENTRY openglDebugCallback(GLenum source, GLenum type, GLuint id, GLenum 
 struct EnemyTest
 {
 	CSprite*				m_Sprite;
+	vector<CSprite*> enemy_projectiles;
+	int iSecret;
 
 	// Constructor
 	EnemyTest() :m_Sprite(NULL){}
@@ -62,12 +64,68 @@ struct EnemyTest
 
 		glm::vec3 pz = m_Sprite->GetPosition();
 		m_Sprite->PlayAnimation("BugEye_Idle");
+
 	}
 
+	//coliziune intre player si proiectile inamic
+	void Collide(CSprite *playerSprite, Collision *collide){
+		int pivot = 0;
 
-	void Update(float dt)
-	{
-		//m_Sprite->SetPosition(glm::vec3(m_Body->position.x, m_Body->position.y, -10.0f));
+		for (int i = 0; i < enemy_projectiles.size(); i++){
+			collide->ResolveCollisionPlayer(playerSprite, enemy_projectiles[i]);
+			if (collide->getStatusPlayer() == true){
+				CSpriteManager::Get()->RemoveSprite(enemy_projectiles[i]->index - pivot);
+				enemy_projectiles.erase(enemy_projectiles.begin() + i - pivot);
+				pivot++;
+				//stergere vieti
+				if (playerSprite->life >= 0){
+					CSpriteManager::Get()->RemoveSprite(lives[lives.size() - 1]->index);
+					lives.erase(lives.end() - 1);
+
+				}
+			}
+			
+		}
+
+
+	}
+
+	//update proiectile inamici
+	void Update(float dt, int &nr)
+	{	
+		glm::vec3 posProj;
+		iSecret = rand() % 500 + 1;
+		if ((int)(dt+iSecret) % 200 == 0 && enemy_projectiles.size()<4){
+			enemy_projectiles.push_back(CSpriteManager::Get()->AddSprite("bugproj.png", enemy_proj));
+			enemy_projectiles[enemy_projectiles.size() - 1]->
+				SetPosition(glm::vec3(m_Sprite->GetPosition().x+0.235f, m_Sprite->GetPosition().y - 0.2f, -13));
+		}
+
+		int pivot = 0;
+		
+		for (int i = 0; i < enemy_projectiles.size(); i++){
+
+			//daca depasesc ecranul sunt sterse
+			
+			if (enemy_projectiles[i]->GetPosition().y < SCREEN_BOTTOM + 0.5f)
+			{
+
+				CSpriteManager::Get()->RemoveSprite(enemy_projectiles[i]->index-pivot-nr);
+				enemy_projectiles.erase(enemy_projectiles.begin() + i-pivot);
+				nr++;
+				pivot++;
+			}
+
+			//altfel este updatata pozitia lor
+			else{
+
+				posProj = enemy_projectiles[i]->GetPosition();
+				enemy_projectiles[i]->SetPosition(glm::vec3(posProj.x,
+					posProj.y - dt*enemy_projectiles[i]->speed, posProj.z));
+			}
+			
+		}
+		
 
 	}
 
@@ -172,9 +230,8 @@ struct PlayerTest
 		}
 
 		if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_SPACE) && semafor) {
-			CSpriteManager::Get()->projectiles.push_back(CSpriteManager::Get()->AddSprite("projectile.png", -1));
-			CSpriteManager::Get()->projectiles[CSpriteManager::Get()->projectiles.size() - 1]->
-				SetPosition(glm::vec3(m_Sprite->GetPosition().x, m_Sprite->GetPosition().y+0.8f, -14));
+			CSpriteManager::Get()->projectiles.push_back(CSpriteManager::Get()->AddSprite("projectile.png", player_proj));
+			CSpriteManager::Get()->projectiles[CSpriteManager::Get()->projectiles.size() - 1]->SetPosition(glm::vec3(m_Sprite->GetPosition().x, m_Sprite->GetPosition().y+0.8f, -14));
 			semafor = false;
 		}
 
@@ -188,9 +245,7 @@ struct PlayerTest
 
 		if (recalculate_position)
 		{
-		//	cout <<"initial "<< dir.x << " " << dir.y << " " << dir.z << endl;
 			dir = glm::normalize(dir);
-			//cout << dir.x << " " << dir.y << " " << dir.z<<endl;
 			pos = pos + dir * PLAYER_MOVE_SPEED * dt;
 		}
 		else
@@ -264,32 +319,44 @@ int main()
 	PlayerTest PlayerEntity;
 
 
-	//CSprite *projectile = CSpriteManager::Get()->AddSprite("projectile.png", -1);
-	CSprite *back = CSpriteManager::Get()->AddSprite("Background.png",2);
-	CSprite *playerSprite = CSpriteManager::Get()->AddSprite("player0000.png", 0);
-//	CSprite *RandomRocket = CSpriteManager::Get()->AddSprite("PlayerRocket.png", 1);
-	float x = -1;
-//	RandomRocket->SetPosition(glm::vec3(-4.0f, 1.0f, -12));
+	CSprite *back = CSpriteManager::Get()->AddSprite("sky0000.png", background);
+
 	
-	back->SetPosition(glm::vec3(-4, -4, -15));
+	for (int k = 0; k < 3; k++){
+		lives.push_back(CSpriteManager::Get()->AddSprite("mini.png", mini));
+		lives[lives.size() - 1]->SetPosition(glm::vec3(3 + k*0.3f, 3.4f, -19));
+	}
+
+	CSprite* lifeSprite = CSpriteManager::Get()->AddSprite("life.png", textLife);
+	lifeSprite->SetPosition(glm::vec3(3 - 0.6f, 3.4f, -19));
+
+
+
+	CSprite *playerSprite = CSpriteManager::Get()->AddSprite("player0000.png", player);
+	
+	back->SetPosition(glm::vec3(-4, -4, -20));
 
 	assert(playerSprite);
 	PlayerEntity.Init(playerSprite);
+//	back->PlayAnimation("Sky");
 
 	EnemyTest vec[100];
-	int number_of_enemy = 5;
+	int number_of_enemy =5;
 	//vector de inamici
 	vector<CSprite*> enemies;
+	float x,y;
 	for (int i = 0; i< number_of_enemy; i++)
 	{
-		CSprite *RandomRocket = CSpriteManager::Get()->AddSprite("PlayerRocket.png",1);
-		RandomRocket->SetPosition(glm::vec3((i - number_of_enemy / 2.0f) * 2.0, 1.5, -11));
+		
+		CSprite *RandomRocket = CSpriteManager::Get()->AddSprite("PlayerRocket.png",enemy);
+		x = -3.0f - i;
+		y = RandomRocket->getFirstParabolaY(x);
+		RandomRocket->SetPosition(glm::vec3(x, y, -11));
 		vec[i].Init(RandomRocket);
 		enemies.push_back(RandomRocket);
 
 
 	}
-
 
 
 	float t = 0.0f;
@@ -327,8 +394,18 @@ int main()
 		{
 			// update logic pentru player
 			PlayerEntity.Update(dt);
+
 			// update animatie
 			CSpriteManager::Get()->Update(dt);
+
+			//update enemies
+			int nr = 0;
+			for (int i = 0; i < number_of_enemy; i++)
+			{
+				if (enemies[i]->life>0){
+					vec[i].Update(dt, nr);
+				}
+			}
 			t += dt;
 			accumulator -= dt;
 		}
@@ -339,24 +416,34 @@ int main()
 		//verificare coliziune intre player si inamic
 		for ( i = 0; i< number_of_enemy; i++)
 		{
-			collide->ResolveCollision(playerSprite,enemies[i]);
+			collide->ResolveCollisionPlayer(playerSprite,enemies[i]);
+			if (collide->getStatusPlayer() == true){
+				if (playerSprite->life>=0){
+					CSpriteManager::Get()->RemoveSprite(lives[lives.size() - 1]->index);
+					lives.erase(lives.end() - 1);
+				}
+				
+
+			}
+
+
+
+			//verificare coliziune intre player si proiectile inamici
+			vec[i].Collide(playerSprite, collide);
+
+			if (playerSprite->life == 0){
+				playerSprite->SetPosition(glm::vec3(-5.0f, -5.0f, playerSprite->GetPosition().z));
+			}
+
+			if (enemies[i]->life == 0){
+				enemies[i]->life = 2;
+			}
+
 		}
-		//collide->ResolveCollision(playerSprite, RandomRocket);
+
 
 		//verificare coliziune intre inamic si proiectilul player-ului
-	/*	for (i = 0; i < CSpriteManager::Get()->projectiles.size(); i++){
-
-			hit2 = collide->CheckCollision(CSpriteManager::Get()->projectiles[i], RandomRocket);
-			if (hit2 == true)
-				break;
-
-		}
-
-		if ( hit2 == true){
-			CSpriteManager::Get()->RemoveSprite(CSpriteManager::Get()->projectiles[i]->index);
-			CSpriteManager::Get()->projectiles.erase(CSpriteManager::Get()->projectiles.begin() + i);
-			hit2 = false;
-		}*/
+		collide->ResolveCollisionEnemy(CSpriteManager::Get()->projectiles, enemies );
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);

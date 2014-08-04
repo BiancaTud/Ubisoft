@@ -1,0 +1,4 @@
+<TextureAtlas imagePath="bug_proj.png">
+	<SubTexture name="bugproj.png" x="0" y="0" width="14" height="12"/>
+
+</TextureAtlas>

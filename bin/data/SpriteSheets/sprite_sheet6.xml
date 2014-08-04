@@ -1,0 +1,4 @@
+<TextureAtlas imagePath="lives.png">
+	<SubTexture name="life.png" x="0" y="0" width="118" height="27"/>
+
+</TextureAtlas>
